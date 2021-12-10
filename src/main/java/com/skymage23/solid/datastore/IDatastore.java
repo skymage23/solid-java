@@ -4,4 +4,6 @@ import java.net.URI;
 
 public interface IDatastore {
     public IDatastoreObject open(Mode mode, URI uri);
+    public IDatastoreNavigator getNavigator();
+    public DatastoreContextType getType();
 }

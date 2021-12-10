@@ -8,11 +8,16 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.stream.Stream;
 
+import com.skymage23.solid.datastore.IDatastore;
+import com.skymage23.solid.datastore.IDatastoreContext;
+import com.skymage23.solid.datastore.IDatastoreObject;
+import com.skymage23.solid.datastore.Mode;
 import com.skymage23.solid.exceptions.NotImplementedException;
 import com.skymage23.solid.exceptions.SolidException;
 
-public class SolidClient {
+public final class SolidClient {
     private static String SolidStorageRef = "http://www.w3.org/ns/pim/space#Storage";
     private static String SolidContainerRef = "http://www.w3.org/ns/ldp#Container";
     private static String SolidBasicContainer = "http://www.w3.org/ns/ldp#BasicContainer";
@@ -20,15 +25,23 @@ public class SolidClient {
     private static String SolidACLRef = "http://www.w3.org/ns/acl";
 
     private URI server;
+    private IDatastore datastore;
 
     //Static Methods:
     //Static Factory:
-    public static SolidClient create(URI url){
+    public static SolidClient create(URI url,
+       Class _class
+    ) throws java.lang.IllegalAccessException,
+             java.lang.InstantiationException,
+             java.lang.NoSuchMethodException,
+             java.lang.reflect.InvocationTargetException
+    {
         if ( ! isServerASolidServer(url)) {
             return null;
         }
-
-        return null;
+        SolidClient retval = new SolidClient();
+        retval.datastore = (IDatastore)_class.getDeclaredConstructor().newInstance();
+        return retval;
     }
 
     private static boolean pingTest(URI uri){
@@ -41,8 +54,6 @@ public class SolidClient {
         //Then, do the ping.
         //DNS is more important because Ping may simply be turned off
         //on the server.
-
-
 
         return true;
     }
@@ -164,23 +175,39 @@ public class SolidClient {
     //Constructors:
     private SolidClient(){}
 
-    public void uploadFile(){
-
-    }
-
-    public void listFiles(){
-
-    }
-
-    public void downloadFile(){
-
-    }
-
-    public void downloadFileIntoRAM(){
-
-    }
-
+    //ACl Opts:
     public void makeACLRequest(){
 
+    }
+
+    //File opts:
+    public void listRemoteDataObjects(){
+
+    }
+
+    public void downloadDataObject(){
+
+    }
+
+    public void downloadDataObjectIntoRAM(){
+
+    }
+
+    public void uploadDataObject(Stream d_object_stream){
+
+    }
+
+
+
+    public IDatastore getDatastore(){
+        return this.datastore;
+    }
+
+    public void uploadDataObject(URI uri)
+    throws SolidException
+    {
+        //Open the object.
+        IDatastoreObject dObject = this.datastore.open(Mode.READ, uri);
+        this.uploadDataObject(dObject.readIntoStream());
     }
 }

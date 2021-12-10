@@ -1,10 +1,14 @@
 package com.skymage23.solid.datastore;
 
 import java.lang.AutoCloseable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public interface IDatastoreObject extends AutoCloseable {
+    //Create
+    public IDatastoreObject createFromURI(URI uri);
+
     //Create/Update
     public void write(String str);
     public void write(ArrayList<String> lines);
